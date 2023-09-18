@@ -1,56 +1,57 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: edoardo <edoardo@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/18 23:41:46 by edoardo           #+#    #+#             */
+/*   Updated: 2023/09/19 00:37:03 by edoardo          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../lib/pong.h"
 
-
-void DrawBackGround(WindowInfo windows)
-{
-    DrawLine(windows.WindowSize.x / 2,0,windows.WindowSize.x / 2,windows.WindowSize.y,WHITE);
-}
+WindowInfo	windows;
 
 int main(void)
 {
-    WindowInfo windows;
+	Ball		ball;
+	Player		player;
 
-    windows.WindowSize.x = 800;
-    windows.WindowSize.y = 450;
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow( windows.WindowSize.x,  windows.WindowSize.y, "Pong");
+	windows = InitWindowInfo(windows);
+	player = InitiPlayer();
+	ball = InitiBall(windows);
 
+	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
-    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
-    //--------------------------------------------------------------------------------------
+	InitWindow( windows.WindowSize.x,  windows.WindowSize.y, "Pong");
 
-    // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
-    {
-        // Update
-        //----------------------------------------------------------------------------------
+	SetTargetFPS(60);              
 
-        Vector2 ballPosition = { (float) windows.WindowSize.x / 2, (float) windows.WindowSize.y / 2 };
-        windows.WindowSize.y = GetScreenHeight();
-        windows.WindowSize.x = GetScreenWidth();
+	while (!WindowShouldClose()) 
+	{
+		player = PlayerMovement(player,windows);
+		
+		ball.CurrentPos = BallResize(ball,windows);
 
-        //----------------------------------------------------------------------------------
+		windows.WindowSize.y = GetScreenHeight();
+		windows.WindowSize.x = GetScreenWidth();
 
-        // Draw
-        //----------------------------------------------------------------------------------
-        BeginDrawing();
+		ball.CurrentPos = BallPhysics(ball.CurrentPos,ball.dir);
 
-            ClearBackground(BLACK);
+		BeginDrawing();
+		
+			DrawPlayer(player);
+			ClearBackground(BLACK);
+			DrawBackGround(windows);
 
-            DrawBackGround(windows);
+			DrawCircleV(ball.CurrentPos, ball.radius, WHITE);
 
-            DrawText("move the ball with arrow keys", 10, 10, 20, DARKGRAY);
+		EndDrawing();
+	}
 
-            DrawCircleV(ballPosition, 10, WHITE);
+	CloseWindow();
 
-        EndDrawing();
-        //----------------------------------------------------------------------------------
-    }
-
-    // De-Initialization
-    //--------------------------------------------------------------------------------------
-    CloseWindow();        // Close window and OpenGL context
-    //--------------------------------------------------------------------------------------
-
-    return 0;
+	return 0;
 }
