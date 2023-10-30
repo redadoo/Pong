@@ -6,22 +6,22 @@
 /*   By: edoardo <edoardo@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 23:41:46 by edoardo           #+#    #+#             */
-/*   Updated: 2023/09/19 00:37:03 by edoardo          ###   ########.fr       */
+/*   Updated: 2023/10/23 18:37:54 by edoardo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../lib/pong.h"
+#include "../pong.h"
 
 WindowInfo	windows;
 
 int main(void)
 {
+	
 	Ball		ball;
 	Player		player;
-
-	windows = InitWindowInfo(windows);
-	player = InitiPlayer();
-	ball = InitiBall(windows);
+	Player		enemy;
+	
+	InitWindowInfo(&windows);
 
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
@@ -29,29 +29,39 @@ int main(void)
 
 	SetTargetFPS(60);              
 
+	InitEnemy(&enemy);
+	InitiPlayer(&player);
+	InitiBall(&ball);
+
+	ball.dir = RandoDir();
+	
 	while (!WindowShouldClose()) 
 	{
-		player = PlayerMovement(player,windows);
+ 		ResizeSprite(&player,&ball,&windows);
+ 		
+
+		PlayerMovement(&player,windows);
+
+		if(collide_check(&ball,&player) || collide_check(&ball,&enemy))
+		{
+			ball.dir.x = -ball.dir.x;
+
+			BallPhysics(&ball,ball.dir);
+		}
+		else
+			BallPhysics(&ball,ball.dir);
+
 		
-		ball.CurrentPos = BallResize(ball,windows);
-
-		windows.WindowSize.y = GetScreenHeight();
-		windows.WindowSize.x = GetScreenWidth();
-
-		ball.CurrentPos = BallPhysics(ball.CurrentPos,ball.dir);
-
 		BeginDrawing();
 		
-			DrawPlayer(player);
 			ClearBackground(BLACK);
 			DrawBackGround(windows);
-
-			DrawCircleV(ball.CurrentPos, ball.radius, WHITE);
+			DrawPlayer(player);
+			DrawCircleV(CLONE_VEC(ball.CurrentPos), ball.collider.radius, WHITE);
+			DrawPlayer(enemy);
 
 		EndDrawing();
 	}
-
 	CloseWindow();
-
 	return 0;
 }

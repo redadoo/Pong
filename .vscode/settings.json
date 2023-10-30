@@ -1,5 +1,14 @@
 {
     "files.associations": {
-        "pong.h": "c"
-    }
+        "pong.h": "c",
+        "stdio.h": "c",
+        "time.h": "c",
+        "raylib.h": "c",
+        "vector2.h": "c",
+        "stdbool.h": "c",
+        "collider.h": "c",
+        "stdlib.h": "c",
+        "math.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }

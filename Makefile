@@ -1,8 +1,12 @@
 NAME = Pong
 
-SRC = $(MAIN_SRC)
+SRC = $(MAIN_SRC) $(COLLIDER_SRC) $(VECTOR2_SRC)
 
-MAIN_SRC = src/*.c
+MAIN_SRC = pong/src/*.c
+
+COLLIDER_SRC = collider/*.c
+
+VECTOR2_SRC = vector2/*.c
 
 OBJ = *.o
 
@@ -32,7 +36,7 @@ play:all
 
 
 leaks: all
-	@valgrind --leak-check=full --show-leak-kinds=all ./$(NAME) map/map_0.ber
+	@valgrind --leak-check=full --show-leak-kinds=all ./$(NAME)
 
 clean:
 	@echo $(CURSIVE)$(GRAY) "     - Removing object files..." $(NONE)
